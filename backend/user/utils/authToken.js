@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 // Database Import
 const Users = require('../models/Users.js');
-const catchAsync = require('../error/catchAsync.js');
+const catchAsync = require('../errors/catchAsync.js');
 const { HttpStatusCode } = require('../enums/httpHeaders.js');
 
 const authToken = {

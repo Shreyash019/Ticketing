@@ -4,8 +4,6 @@ const authenticationController = require('../controllers/userAuthController');
 const profileController = require('../controllers/userProfileController');
 
 router.route('/sign/up').get(authenticationController.ticketing_User_Sign_Up);
-router.route('/verification').put(authenticationController.ticketing_User_Registration_Verification);
-router.route('/resend/otp').put(authenticationController.ticketing_User_Resend_Registration_OTP);
 router.route('/sign/in').post(authenticationController.ticketing_User_Sign_In);
 router.route('/sign/out').put(authenticationController.ticketing_User_Sign_Out);
 router.route('/password/update').put(authenticationController.ticketing_User_Password_Update);
