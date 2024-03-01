@@ -28,7 +28,7 @@ const authToken = {
         }
 
         // c) Token setting in header
-        res.cookie('usertoken', token, options);
+        res.cookie('ticketingUser', token, options);
 
         // Sending response 
         return res

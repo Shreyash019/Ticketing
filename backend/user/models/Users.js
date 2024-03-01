@@ -24,6 +24,14 @@ const UserSchemaModel = new mongoose.Schema(
             required: true,
             unique: true
         },
+        firstName: {
+            type: String,
+            required: true,
+        },
+        lastName: {
+            type: String,
+            required: true,
+        },
         email: {
             type: String,
             required: true,
@@ -36,35 +44,6 @@ const UserSchemaModel = new mongoose.Schema(
             minLength: 8,
             select: false
         },
-        userOTP: {
-            otp: {
-                type: Number,
-                minLength: 6,
-                maxLength: 6,
-            },
-            timeToExpire: {
-                type: Date,
-            },
-            OTPVerified: {
-                type: Boolean,
-                default: false
-            },
-        },
-        forgotOTP: {
-            otp: {
-                type: Number,
-                minLength: 6,
-                maxLength: 6,
-            },
-            timeToExpire: {
-                type: Date,
-            },
-            OTPVerified: {
-                type: Boolean,
-                default: false
-            },
-        },
-
         plot: {
             type: String,
         },

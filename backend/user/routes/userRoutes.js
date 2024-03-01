@@ -3,9 +3,9 @@ const router = express.Router();
 const authenticationController = require('../controllers/userAuthController');
 const profileController = require('../controllers/userProfileController');
 
-router.route('/sign/up').get(authenticationController.ticketing_User_Sign_Up);
+router.route('/sign/up').post(authenticationController.ticketing_User_Sign_Up);
 router.route('/sign/in').post(authenticationController.ticketing_User_Sign_In);
-router.route('/sign/out').put(authenticationController.ticketing_User_Sign_Out);
+router.route('/sign/out').get(authenticationController.ticketing_User_Sign_Out);
 router.route('/password/update').put(authenticationController.ticketing_User_Password_Update);
 router.route('/forgot/password').post(authenticationController.ticketing_User_Forgot_Password);
 router.route('/reset/password').put(authenticationController.ticketing_User_Reset_Password);

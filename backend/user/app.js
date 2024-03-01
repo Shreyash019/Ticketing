@@ -19,7 +19,16 @@ app.use(fileUpload({ limits: { fileSize: 50 * 1024 * 1024 } }));
 
 const userRoutes = require('./routes/userRoutes');
 
-app.use('/user', userRoutes);
+
+// Health Check Endpoint
+app.get('/health', (req, res, next) => {
+    res.status(200).json({
+        success: true,
+        message: `Service is up and running!`
+    })
+})
+
+app.use('/api/v1/user', userRoutes);
 app.use(errorMiddleware);
 
 module.exports = app;

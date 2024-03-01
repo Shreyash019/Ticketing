@@ -9,7 +9,7 @@ const Users = require('../models/Users');
 exports.ticketing_User_Sign_Up = CatchAsync(async (req, res, next) => {
 
     // Checking for All Details
-    if (!req.body.firstName || !req.body.lastName || !req.body.userName || !req.body.email || !req.body.password) {
+    if (!req.body.firstName || !req.body.lastName || !req.body.username || !req.body.email || !req.body.password) {
         return res.status(HttpStatusCode.BAD_REQUEST).json({
             success: false,
             message: `Please provide all details!`
@@ -17,7 +17,7 @@ exports.ticketing_User_Sign_Up = CatchAsync(async (req, res, next) => {
     }
 
     // Checking if user exist
-    const isUser = await Users.findOne({ $or: [{ email: req.body.email }, { userName: req.body.userName }] })
+    const isUser = await Users.findOne({ $or: [{ email: req.body.email }, { userName: req.body.username }] })
     if (isUser) {
         return res.status(HttpStatusCode.CONFLICT).json({
             success: false,
@@ -29,9 +29,10 @@ exports.ticketing_User_Sign_Up = CatchAsync(async (req, res, next) => {
     const user = await Users.create({
         firstName: req.body.firstName.toLowerCase(),
         lastName: req.body.lastName.toLowerCase(),
-        userName: req.body.userName.trim(' ').toLowerCase(),
+        username: req.body.username.trim(' ').split(" ").join("").toLowerCase(),
         email: req.body.email.toLowerCase(),
-        password: req.body.password
+        password: req.body.password,
+        isActive: true
     });
 
     // Setting Token
@@ -58,25 +59,20 @@ exports.ticketing_User_Sign_In = CatchAsync(async (req, res, next) => {
     let user;
     if (req.body.username) {
         // Checking if user exist
-        user = await Users.findOne({ username: req.body.username })
+        user = await Users.findOne({ username: req.body.username }).select("+password")
         // Checking password are same or not
         if (!user || !(await user.correctPassword(password, user.password))) {
             return next(new ErrorHandler("Invalid email or password", HttpStatusCode.UNAUTHORIZED));
         }
     } else if (req.body.email) {
         // Checking if user exist
-        user = await Users.findOne({ email: req.body.email })
+        user = await Users.findOne({ email: req.body.email }).select("+password")
 
         // Checking password are same or not
         if (!user || !(await user.correctPassword(password, user.password))) {
             return next(new ErrorHandler("Invalid email or password", HttpStatusCode.UNAUTHORIZED));
         }
     }
-
-    user.forgotOTP.otp = undefined;
-    user.forgotOTP.timeToExpire = undefined;
-    user.forgotOTP.OTPVerified = undefined;
-    await user.save();
 
     // Setting cookie and sending response
     await authToken.sendToken(res, user);
@@ -92,7 +88,7 @@ exports.ticketing_User_Sign_In = CatchAsync(async (req, res, next) => {
 exports.ticketing_User_Sign_Out = CatchAsync(async (req, res, next) => {
     //  Setting null value for header authorization and cookie
     res.removeHeader("Authorization");
-    res.cookie("usertoken", null, {
+    res.cookie("ticketingUser", null, {
         expires: new Date(Date.now()),
         httpOnly: true,
     });
