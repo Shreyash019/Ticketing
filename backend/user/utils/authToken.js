@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const Users = require('../models/Users.js');
 const catchAsync = require('../errors/catchAsync.js');
 const { HttpStatusCode } = require('../enums/httpHeaders.js');
+const ErrorHandler = require('../utils/errorHandler.js');
 
 const authToken = {
 
@@ -40,8 +41,8 @@ const authToken = {
         // a) Fetching token 
         let token = undefined;
 
-        if (req.cookies.usertoken) {
-            token = req.cookies.usertoken
+        if (req.cookies.ticketingUser) {
+            token = req.cookies.ticketingUser
         }
         // else if (req.headers.authorization && req.headers.authorization.startsWith('bearer')) {
         else if (req.headers.authorization && req.headers.authorization.startsWith('bearer')) {
@@ -51,12 +52,7 @@ const authToken = {
         }
 
         // b) Returning if no token
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                message: `Please login.`
-            })
-        }
+        if (!token) return next(new ErrorHandler(`Please login`, HttpStatusCode.UNAUTHORIZED));
 
         // c) Decoding user using token
         function verifyToken(token) {
@@ -86,18 +82,15 @@ const authToken = {
             });
 
         if (jwtReturnData.err) {
-            return res.status(HttpStatusCode.UNAUTHORIZED).json({
-                success: false,
-                message: `Bad Request! Please login again.`
-            })
+            return next(new ErrorHandler(`Bad Request! Please login again`, HttpStatusCode.UNAUTHORIZED));
         }
         // const decoded = jwt.verify(token, process.env.JWT_SECRET)
         let user = await Users.findById(jwtReturnData.decoded.id)
-            .select('+role +isBusinessProfile')
+            .select('+isActive +isProfileCompleted')
 
         // d) Setting Authenticated User
         if (!user) {
-            return next(new ErrorHandler(`Please login again`, 401))
+            return next(new ErrorHandler(`Bad Request! Please login again`, HttpStatusCode.UNAUTHORIZED));
         }
         req.user = user
 
@@ -107,21 +100,17 @@ const authToken = {
 
     // 04) <<<<<<<<|| PROFILE VERIFICATION CHECK||>>>>>>>>
     isProfileVerified: async function (req, res, next) {
-        let user = await Users.findById(req.user.id)
-            .select("+isAccountVerified +isProfileCompleted")
+        let user = req.user;
+            
 
         // d) Setting Authenticated User
         if (!user) {
             return next(new ErrorHandler(`Either user not exist or not logged in!`, 401))
         } else {
-            if (!user.isAccountVerified) {
-                return next(new ErrorHandler(`Your account is not verified, Please verify it first!`, 401))
-            }
-            if (!user || !user.isProfileCompleted) {
-                return next(new ErrorHandler(`Your profile is not updated yet, Please update it first!`, 401))
+            if (!user.isProfileCompleted) {
+                return next(new ErrorHandler(`Your profile in not updated, Please update it first!`, 401))
             }
         }
-
         next();
     },
 

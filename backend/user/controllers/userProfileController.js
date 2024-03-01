@@ -1,12 +1,22 @@
 const CatchAsync = require('../errors/catchAsync');
 const {HttpStatusCode} = require('../enums/httpHeaders');
+const ErrorHandler = require('../utils/errorHandler');
+const Users = require('../models/Users');
 
 
 // Profile Information
 exports.ticketing_User_Profile_Information = CatchAsync( async(req, res, next)=>{
+
+    const isUser = await Users.findById({_id: req.user.id})
+        .catch((err)=>console.log(err))
+    if(!isUser){
+        return next(new ErrorHandler('Please login again', HttpStatusCode.UNAUTHORIZED))
+    }
+
     res.status(HttpStatusCode.SUCCESS).json({
         success: true,
-        message: 'Profile Information'
+        message: 'Profile Information',
+        data: isUser
     })
 })
 
