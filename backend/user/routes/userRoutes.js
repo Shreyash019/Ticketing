@@ -17,7 +17,7 @@ router.route('/profile')
 
 router.route('/address')
     .get(authToken.isAuthenticated, authToken.isProfileVerified, authToken.userDataClear, profileController.ticketing_User_Address_Information)
-    .put(authToken.isAuthenticated, authToken.userDataClear, profileController.ticketing_User_Address_Update);
+    .put(authToken.isAuthenticated, authToken.isProfileVerified, authToken.userDataClear, profileController.ticketing_User_Address_Update);
 
 router.route('/location').post(authToken.isAuthenticated, authToken.isProfileVerified, authToken.userDataClear, authToken.isProfileVerified, profileController.ticketing_User_Location_Update);
 router.route('/profile/image').put(authToken.isAuthenticated, authToken.isProfileVerified, authToken.userDataClear, profileController.ticketing_User_Profile_Image_Update);

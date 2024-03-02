@@ -102,6 +102,8 @@ exports.ticketing_User_Sign_Out = CatchAsync(async (req, res, next) => {
 
 // Password Change
 exports.ticketing_User_Password_Update = CatchAsync(async (req, res, next) => {
+
+    // Sending response
     res.status(HttpStatusCode.SUCCESS).json({
         success: true,
         message: 'Password Updated Successfully'

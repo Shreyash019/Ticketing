@@ -31,6 +31,7 @@ exports.ticketing_User_Profile_Information = CatchAsync( async(req, res, next)=>
         zipCode: isUser.zipCode || undefined
     }
 
+    // Sending response
     res.status(HttpStatusCode.SUCCESS).json({
         success: true,
         message: 'Profile Information',
@@ -66,14 +67,50 @@ exports.ticketing_User_Profile_Information_Update = CatchAsync( async(req, res, 
 
 // Address Information
 exports.ticketing_User_Address_Information = CatchAsync( async(req, res, next)=>{
+    // Fetching user
+    const isUser = await Users.findById({_id: req.user.id})
+        .select('plot address city state country zipCode')
+        .catch((err)=>console.log(err))
+    if(!isUser){
+        return next(new ErrorHandler('Please login again', HttpStatusCode.UNAUTHORIZED))
+    }
+
+    // Response Object
+    let responseObject = {
+        plot: isUser.plot || undefined,
+        address: isUser.address || undefined,
+        city: isUser.city || undefined,
+        state: isUser.state || undefined, 
+        country: isUser.country || undefined,
+        zipCode: isUser.zipCode || undefined
+    }
+
     res.status(HttpStatusCode.SUCCESS).json({
         success: true,
-        message: 'Address Updated Successfully!'
+        message: 'User Address Information',
+        data: responseObject,
     })
 })
 
 // Address Information Update
 exports.ticketing_User_Address_Update = CatchAsync( async(req, res, next)=>{
+
+    // Fetching user
+    const isUser = await Users.findOne({_id: req.user.id})
+        .select("+isProfileCompleted")
+        .catch(err=>console.log(err))
+    if(!isUser) return next(new ErrorHandler(`Please login again!`, HttpStatusCode.UNAUTHORIZED));
+
+    // Updating address
+    isUser.plot = req.body.plot ? req.body.plot.toLowerCase() : isUser.plot ? isUser.plot : undefined; 
+    isUser.address = req.body.address ? req.body.address.toLowerCase() : isUser.address ? isUser.address : undefined; 
+    isUser.city = req.body.city ? req.body.city.toLowerCase() : isUser.city ? isUser.city : undefined; 
+    isUser.state = req.body.state ? req.body.state.toLowerCase() : isUser.state ? isUser.state : undefined; 
+    isUser.country = req.body.country ? req.body.country.toLowerCase() : isUser.country ? isUser.country : undefined; 
+    isUser.zipCode = req.body.zipCode && parseInt(req.body.zipCode) !== NaN ? parseInt(req.body.zipCode) : isUser.zipCode ? isUser.zipCode : undefined; 
+    await isUser.save();
+
+    // Sending response
     res.status(HttpStatusCode.SUCCESS).json({
         success: true,
         message: 'Address Updated Successfully!'
@@ -83,6 +120,8 @@ exports.ticketing_User_Address_Update = CatchAsync( async(req, res, next)=>{
 
 // Location Information Update
 exports.ticketing_User_Location_Update = CatchAsync( async(req, res, next)=>{
+
+    // Sending response
     res.status(HttpStatusCode.SUCCESS).json({
         success: true,
         message: 'Location Updated Successfully!'
