@@ -1,40 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config/config.env" });
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const morgan = require('morgan');
 
 const app = express();
+app.use(cookieParser());
 app.use(morgan('combined'));
-
-// // Connection information for each database (replace with actual details)
-// const adminDbConfig = {
-//     uri: process.env.MONGO_URL_ADMIN,
-//     schema: require('./models/Admin.js'), // Path to admin schema
-//     model: 'Admin', // Name of admin model
-// };
-
-// const businessDbConfig = {
-//     uri: process.env.MONGO_URL_BUSINESS,
-//     schema: require('./models/Business.js'), // Path to business schema
-//     model: 'Business', // Name of business model
-// };
-
-// const userDbConfig = {
-//     uri: process.env.MONGO_URL_USER,
-//     schema: require('./models/Users.js'), // Path to customer schema
-//     model: 'User', // Name of customer model
-// };
-
-// // Connect to each database
-// const adminConnection = mongoose.createConnection(adminDbConfig.uri);
-// const businessConnection = mongoose.createConnection(businessDbConfig.uri);
-// const userConnection = mongoose.createConnection(userDbConfig.uri);
-
-// const Admins = adminConnection.model(adminDbConfig.model, adminDbConfig.schema)
-// const Business = businessConnection.model(businessDbConfig.model, businessDbConfig.schema)
-// const Users = userConnection.model(userDbConfig.model, userDbConfig.schema)
 
 // Proxy middleware configuration for each microservice
 const userProxy = createProxyMiddleware({
