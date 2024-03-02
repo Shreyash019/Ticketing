@@ -11,7 +11,7 @@ const authToken = {
 
     // 01) <<<<<<<<|| TOKEN GENERATION ||>>>>>>>>
     userSignToken: function (id) {
-        return jwt.sign({ id }, process.env.JWT_SECRET, {
+        return jwt.sign({ id:id, role: 'business' }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRES_IN
         })
     },
