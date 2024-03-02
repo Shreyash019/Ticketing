@@ -37,6 +37,16 @@ const UserSchemaModel = new mongoose.Schema(
             required: true,
             unique: true
         },
+        dateOfBirth:  {
+            type: Date,
+        },
+        gender: {
+            type: String,
+            enum: ['male', 'female', 'others']
+        },
+        phone: {
+            type: Number
+        },
 
         // Passwords
         password: {

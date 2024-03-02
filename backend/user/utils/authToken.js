@@ -92,7 +92,11 @@ const authToken = {
         if (!user) {
             return next(new ErrorHandler(`Bad Request! Please login again`, HttpStatusCode.UNAUTHORIZED));
         }
-        req.user = user
+        req.user = {
+            id: user._id,
+            isActive: user.isActive,
+            isProfileCompleted: user.isProfileCompleted
+        }
 
         // e) Calling next function
         next();
@@ -102,7 +106,6 @@ const authToken = {
     isProfileVerified: async function (req, res, next) {
         let user = req.user;
             
-
         // d) Setting Authenticated User
         if (!user) {
             return next(new ErrorHandler(`Either user not exist or not logged in!`, 401))
@@ -116,7 +119,7 @@ const authToken = {
 
     // 05) <<<<<<<<|| CLEARING SENSITIVE DATA ||>>>>>>>>
     userDataClear: async function (req, res, next) {
-        req.user.role = undefined,
+        req.user.isActive = undefined,
         req.user.isBusinessProfile = undefined
         next();
     },
