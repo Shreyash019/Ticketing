@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
-const UserSchemaModel = new mongoose.Schema(
+const BusinessSchemaModel = new mongoose.Schema(
     {
         isAccountVerified: {
             type: Boolean,
@@ -21,7 +21,7 @@ const UserSchemaModel = new mongoose.Schema(
         },
         role: {
             type: String,
-            default: 'user',
+            default: 'business',
             select: false
         },
         username: {
@@ -29,11 +29,7 @@ const UserSchemaModel = new mongoose.Schema(
             required: true,
             unique: true
         },
-        firstName: {
-            type: String,
-            required: true,
-        },
-        lastName: {
+        businessName: {
             type: String,
             required: true,
         },
@@ -42,12 +38,13 @@ const UserSchemaModel = new mongoose.Schema(
             required: true,
             unique: true
         },
-        dateOfBirth:  {
-            type: Date,
-        },
-        gender: {
+        registrationID:  {
             type: String,
-            enum: ['male', 'female', 'others']
+            unique: true
+        },
+        registrationDate:  {
+            type: Date,
+            default: Date.now()
         },
         phone: {
             type: Number
@@ -86,19 +83,19 @@ const UserSchemaModel = new mongoose.Schema(
 );
 
 // Add a 2dSphere index on the location field
-UserSchemaModel.index({ location: '2dsphere' });
+BusinessSchemaModel.index({ location: '2dsphere' });
 
-UserSchemaModel.pre('save', async function (next) {
+BusinessSchemaModel.pre('save', async function (next) {
     if (!this.isModified('password')) return next()
     this.password = await bcrypt.hash(this.password, 12)
     next()
 });
 
-UserSchemaModel.methods.correctPassword = async function (candidatePassword, userPassword) {
+BusinessSchemaModel.methods.correctPassword = async function (candidatePassword, userPassword) {
     return await bcrypt.compare(candidatePassword, userPassword)
 };
 
-UserSchemaModel.methods.getResetPasswordToken = async function () {
+BusinessSchemaModel.methods.getResetPasswordToken = async function () {
     // 1) generate token
     const resetToken = crypto.randomBytes(20).toString("hex");
     // 2) generate hash token and add to db
@@ -107,5 +104,5 @@ UserSchemaModel.methods.getResetPasswordToken = async function () {
     return resetToken;
 }
 
-const Users = mongoose.model('Users', UserSchemaModel);
-module.exports = Users;
+const Business = mongoose.model('Users', BusinessSchemaModel);
+module.exports = Business;

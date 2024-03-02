@@ -11,6 +11,10 @@ const userProxy = createProxyMiddleware({
     target: 'http://localhost:5001/api/v1/', // Example target URL for posts service
     changeOrigin: true,
 });
+const businessProxy = createProxyMiddleware({
+    target: 'http://localhost:5005/api/v1/', // Example target URL for posts service
+    changeOrigin: true,
+});
 
 
 // Health check function for a specific service
@@ -24,7 +28,7 @@ const checkServiceHealth = async (serviceUrl) => {
 };
 
 app.use(async (req, res, next) => {
-    console.log(req.url)
+
     let targetURL = req.url.split('/')[1];
     if (targetURL === 'user') {
         const isAvailable = await checkServiceHealth('http://localhost:5001');
@@ -36,7 +40,17 @@ app.use(async (req, res, next) => {
                 message: 'User Service Unavailable!'
             });
         }
-    } 
+    } else if (targetURL === 'buzz') {
+        const isAvailable = await checkServiceHealth('http://localhost:5005');
+        if (isAvailable) {
+            businessProxy(req, res, next)
+        } else {
+            res.status(503).json({
+                success: false,
+                message: 'User Service Unavailable!'
+            });
+        }
+    }
 })
 
 // Error handling middleware
