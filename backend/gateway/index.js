@@ -18,7 +18,10 @@ const businessProxy = createProxyMiddleware({
     target: 'http://localhost:5005/api/v1/', // Example target URL for posts service
     changeOrigin: true,
 });
-
+const ticketProxy = createProxyMiddleware({
+    target: 'http://localhost:5003/api/v1/', // Example target URL for posts service
+    changeOrigin: true,
+});
 
 // Health check function for a specific service
 const checkServiceHealth = async (serviceUrl) => {
@@ -50,7 +53,17 @@ app.use(async (req, res, next) => {
         } else {
             res.status(503).json({
                 success: false,
-                message: 'User Service Unavailable!'
+                message: 'Business Service Unavailable!'
+            });
+        }
+    } else if(targetURL === 'ticket'){
+        const isAvailable = await checkServiceHealth('http://localhost:5003');
+        if (isAvailable) {
+            ticketProxy(req, res, next)
+        } else {
+            res.status(503).json({
+                success: false,
+                message: 'Ticket Service Unavailable!'
             });
         }
     }

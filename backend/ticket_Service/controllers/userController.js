@@ -4,38 +4,38 @@ const { HttpStatusCode } = require('../enums/httpHeaders');
 // Hall Tickets
 // Event Passes
 
-exports.Ticketing_Users_All_Hall_Tickets_List = CatchAsync(async(req, res, next)=>{
+exports.Ticketing_Users_Select_Hall_Ticket = CatchAsync(async(req, res, next)=>{
 
     // Sending Response
-    res.status(HttpStatusCode.CREATED).json({
+    res.status(HttpStatusCode.SUCCESS).json({
         success: true,
-        message: 'Hall Tickets Uploaded Successfully!'
+        message: 'Tickets are selected!'
     })
 })
 
-exports.Ticketing_Users_Single_Hall_Tickets_List = CatchAsync(async(req, res, next)=>{
+exports.Ticketing_Users_Buy_Hall_Ticket = CatchAsync(async(req, res, next)=>{
 
     // Sending Response
-    res.status(HttpStatusCode.CREATED).json({
+    res.status(HttpStatusCode.SUCCESS).json({
         success: true,
-        message: 'Hall Tickets Uploaded Successfully!'
+        message: 'Hall Ticket Booked Successfully!'
     })
 })
 
-exports.Ticketing_Users_All_Events_Passes_Lists = CatchAsync(async(req, res, next)=>{
+exports.Ticketing_Users_Select_Event_Pass = CatchAsync(async(req, res, next)=>{
 
     // Sending Response
-    res.status(HttpStatusCode.CREATED).json({
+    res.status(HttpStatusCode.SUCCESS).json({
         success: true,
-        message: 'Hall Tickets Uploaded Successfully!'
+        message: 'Event Pass are selected!'
     })
 })
 
-exports.Ticketing_Users_Single_Event_Passes_Tickets = CatchAsync(async(req, res, next)=>{
+exports.Ticketing_Users_Buy_Event_Pass = CatchAsync(async(req, res, next)=>{
 
     // Sending Response
-    res.status(HttpStatusCode.CREATED).json({
+    res.status(HttpStatusCode.SUCCESS).json({
         success: true,
-        message: 'Hall Tickets Uploaded Successfully!'
+        message: 'Event Pass booked successfully!'
     })
 })
