@@ -1,0 +1,1 @@
+mongodb+srv://kumarshreyash98:q3DnjLCvXO91DFYt@cluster0.kqpcuur.mongodb.net/ticketing?retryWrites=true&w=majority&appName=Cluster0

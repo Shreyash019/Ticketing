@@ -18,7 +18,7 @@ exports.ticketing_Business_Profile_Information = CatchAsync( async(req, res, nex
         _id: isBusiness._id,
         username: isBusiness.username,
         email: isBusiness.email,
-        name: isBusiness.businessName,
+        businessName: isBusiness.businessName,
         registrationID: isBusiness.registrationID,
         phone: isBusiness.phone || undefined,
         plot: isBusiness.plot || undefined,
@@ -32,7 +32,7 @@ exports.ticketing_Business_Profile_Information = CatchAsync( async(req, res, nex
     // Sending response
     res.status(HttpStatusCode.SUCCESS).json({
         success: true,
-        message: 'Profile Information',
+        message: 'Business Profile Information',
         data: responseObject,
     })
 })

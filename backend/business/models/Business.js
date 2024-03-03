@@ -31,7 +31,6 @@ const BusinessSchemaModel = new mongoose.Schema(
         },
         businessName: {
             type: String,
-            required: true,
         },
         email: {
             type: String,

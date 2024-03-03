@@ -61,7 +61,7 @@ const authToken = {
                     if (err && err.name === 'JsonWebTokenError' && err.message === 'jwt malformed') {
                         reject(new Error('Invalid token'));
                     } else if (err) {
-                        reject(err);
+                        reject(new Error('Invalid token'));
                     } else {
                         resolve(decoded);
                     }
