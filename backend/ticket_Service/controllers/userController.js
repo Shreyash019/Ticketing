@@ -1,6 +1,9 @@
 const CatchAsync = require('../errors/catchAsync');
 const { HttpStatusCode } = require('../enums/httpHeaders');
 
+const HallTickets = require('../models/HallTickets');
+const EventPass = require('../models/EventPass');
+
 // Hall Tickets
 // Event Passes
 
