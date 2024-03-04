@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const EventPassSchema = new mongoose.Schema(
     {
+        business: {
+            type: String,
+            required: true
+        },
         organizer: {
             type: String,
             required: true

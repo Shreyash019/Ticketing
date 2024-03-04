@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const HallTicketsSchema = new mongoose.Schema(
     {
+        business: {
+            type: String,
+            required: true
+        },
         showName: {
             type: String,
             required: true
