@@ -2,40 +2,13 @@
 const jwt = require('jsonwebtoken');
 
 // Database Import
-const Business = require('../models/Business.js');
 const catchAsync = require('../errors/catchAsync.js');
 const { HttpStatusCode } = require('../enums/httpHeaders.js');
 const ErrorHandler = require('../utils/errorHandler.js');
 
 const authToken = {
 
-    // 01) <<<<<<<<|| TOKEN GENERATION ||>>>>>>>>
-    userSignToken: function (id) {
-        return jwt.sign({ id:id, role: 'business' }, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRES_IN
-        })
-    },
-
-    // 02) <<<<<<<<|| TOKEN SETUP FOR USER ||>>>>>>>>
-    sendToken: function (res, user) {
-
-        // a) Token Generation
-        const token = this.userSignToken(user._id);
-
-        // b) Cookie validation days setup
-        const options = {
-            expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
-            httpOnly: true,
-        }
-
-        // c) Token setting in header
-        res.cookie('ticketingBusiness', token, options);
-
-        // Sending response 
-        return res
-    },
-
-    // 03) <<<<<<<<|| AUTHENTICATION CHECK ||>>>>>>>>
+    // 01) <<<<<<<<|| AUTHENTICATION CHECK ||>>>>>>>>
     isAuthenticated: catchAsync(async function (req, res, next) {
 
         // a) Fetching token 
@@ -84,46 +57,15 @@ const authToken = {
         if (jwtReturnData.err) {
             return next(new ErrorHandler(`Bad Request! Please login again`, HttpStatusCode.UNAUTHORIZED));
         }
-        // const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        let user = await Business.findById(jwtReturnData.decoded.id)
-            .select('+isActive +isProfileCompleted')
 
-        // d) Setting Authenticated User
-        if (!user) {
-            return next(new ErrorHandler(`Bad Request! Please login again`, HttpStatusCode.UNAUTHORIZED));
-        }
         req.user = {
-            id: user._id,
-            isActive: user.isActive,
-            isProfileCompleted: user.isProfileCompleted
+            id: jwtReturnData.decoded.id,
+            role: jwtReturnData.decoded.role,
         }
 
         // e) Calling next function
         next();
-    }),
-
-    // 04) <<<<<<<<|| PROFILE VERIFICATION CHECK||>>>>>>>>
-    isProfileVerified: async function (req, res, next) {
-        let user = req.user;
-            
-        // d) Setting Authenticated User
-        if (!user) {
-            return next(new ErrorHandler(`Either user not exist or not logged in!`, 401))
-        } else {
-            if (!user.isProfileCompleted) {
-                return next(new ErrorHandler(`Your profile in not updated, Please update it first!`, 401))
-            }
-        }
-        next();
-    },
-
-    // 05) <<<<<<<<|| CLEARING SENSITIVE DATA ||>>>>>>>>
-    userDataClear: async function (req, res, next) {
-        req.user.isActive = undefined,
-        req.user.isBusinessProfile = undefined
-        next();
-    },
-
+    })
 }
 
 module.exports = authToken;

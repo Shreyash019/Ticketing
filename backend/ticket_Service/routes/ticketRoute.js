@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const authToken = require('../utils/authToken');
 const BusinessController = require('../controllers/businessController');
 const UserController = require('../controllers/userController');
 
-router.route('/crt/new/hall/ticket').post(BusinessController.Ticketing_Business_New_Hall_Tickets_Upload);
+router.route('/crt/new/hall/ticket').post(authToken.isAuthenticated, BusinessController.Ticketing_Business_New_Hall_Tickets_Upload);
 
 router.route('/all/hall/ticket').get(BusinessController.Ticketing_Business_All_Hall_Tickets_List);
 

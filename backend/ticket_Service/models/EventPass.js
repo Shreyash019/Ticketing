@@ -18,6 +18,10 @@ const EventPassSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        description: {
+            type: String,
+            required: true
+        },
         startDate: {
             type: Date,
             required: true
@@ -58,7 +62,8 @@ const EventPassSchema = new mongoose.Schema(
         address: {
             type: String,
             required: true,
-        }, city: {
+        }, 
+        city: {
             type: String,
             required: true
         },

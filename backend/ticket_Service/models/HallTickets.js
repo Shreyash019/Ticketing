@@ -6,6 +6,10 @@ const HallTicketsSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        hallName: {
+            type: String,
+            required: true
+        },
         showName: {
             type: String,
             required: true
