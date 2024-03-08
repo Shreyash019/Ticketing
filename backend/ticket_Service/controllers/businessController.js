@@ -41,17 +41,22 @@ function convertStringToDateTime(timeString) {
 
 exports.Ticketing_Business_New_Hall_Tickets_Upload = CatchAsync(async (req, res, next) => {
 
+    if(!req.user || req.user && req.user.role !== 'business'){
+        return next(new ErrorHandler(`Unauthorized access`, HttpStatusCode.UNAUTHORIZED))
+    } 
+
+    console.log(req.body)
     // Destructuring request body and checking if it has the right content type
     const { hallName, showName, description, startDate, startTime, endDate, endTime, tickets, address, city, state, country, zipCode, coordinates } = req.body;
-    if (!hallName || !showName || !description || !startDate || !startTime || !endDate || !endTime || !tickets || !address || !city || !state || !country || !zipCode || !coordinates || !coordinates[0] || !coordinates[1]) {
-        return next(new ErrorHandler(`Please provide all required fields`, HttpStatusCode.BAD_GATEWAY))
+    if (!hallName || !showName || !description || !startDate || !startTime || !endDate || !endTime || !tickets  || !address || !city || !state || !country || !zipCode || !coordinates || !coordinates[0] || !coordinates[1]) {
+        return next(new ErrorHandler(`Please provide all required fields`, HttpStatusCode.BAD_REQUEST))
     }
 
     // Verifying details of ticket and restructuring
     let verifiedTicket = []
     for (let i = 0; i < tickets.length; i++) {
         if (!tickets[i].ticketType || !tickets[i].price || !tickets[i].quantityAvailable) {
-            return next(new ErrorHandler(`Please provide all required fields`, HttpStatusCode.BAD_GATEWAY))
+            return next(new ErrorHandler(`Please provide all required fields`, HttpStatusCode.BAD_REQUEST))
         }
         else {
             let temp = {
@@ -68,25 +73,25 @@ exports.Ticketing_Business_New_Hall_Tickets_Upload = CatchAsync(async (req, res,
     let formatEndTime = convertStringToDateTime(req.body.endTime);
 
     // Saving Ticket Information
-    await HallTickets.create({
-        business: req.user.id,
-        showName: req.body.showName.toLowerCase(),
-        hallName: req.body.hallName.toLowerCase(),
-        description: req.body.description,
-        startDate: req.body.startDate,
-        startTime: formatStartTime,
-        endDate: req.body.endDate,
-        endTime: formatEndTime,
-        tickets: verifiedTicket,
-        address: req.body.address.toLowerCase(),
-        city: req.body.city.toLowerCase(),
-        country: req.body.country.toLowerCase(),
-        zipCode: parseInt(req.body.zipCode),
-        location: {
-            type: 'Point',
-            coordinates: [parseInt(req.body.coordinates[0]), parseInt(req.body.coordinates[1])]
-        }
-    })
+    // await HallTickets.create({
+    //     business: req.user.id,
+    //     showName: req.body.showName.toLowerCase(),
+    //     hallName: req.body.hallName.toLowerCase(),
+    //     description: req.body.description,
+    //     startDate: req.body.startDate,
+    //     startTime: formatStartTime,
+    //     endDate: req.body.endDate,
+    //     endTime: formatEndTime,
+    //     tickets: verifiedTicket,
+    //     address: req.body.address.toLowerCase(),
+    //     city: req.body.city.toLowerCase(),
+    //     country: req.body.country.toLowerCase(),
+    //     zipCode: parseInt(req.body.zipCode),
+    //     location: {
+    //         type: 'Point',
+    //         coordinates: [parseInt(req.body.coordinates[0]), parseInt(req.body.coordinates[1])]
+    //     }
+    // })
 
     // Resetting Request Header
     req.user = undefined;

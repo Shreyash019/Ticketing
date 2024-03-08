@@ -3,6 +3,7 @@ const router = express.Router();
 const authToken = require('../utils/authToken');
 const authenticationController = require('../controllers/businessAuthController');
 const profileController = require('../controllers/businessProfileController');
+const ticketController = require('../controllers/ticketsController');
 
 router.route('/sign/up').post(authenticationController.ticketing_Business_Sign_Up);
 router.route('/sign/in').post(authenticationController.ticketing_Business_Sign_In);
@@ -23,5 +24,7 @@ router.route('/location').post(authToken.isAuthenticated, authToken.isProfileVer
 router.route('/profile/image').put(authToken.isAuthenticated, authToken.isProfileVerified, authToken.userDataClear, profileController.ticketing_Business_Profile_Image_Update);
 router.route('/account/disable').put(authToken.isAuthenticated, authToken.isProfileVerified, authToken.userDataClear, profileController.ticketing_Business_Account_Disable);
 router.route('/account/delete').post(authToken.isAuthenticated, authToken.isProfileVerified, authToken.userDataClear, profileController.ticketing_Business_Account_Delete);
+
+router.route('/hall/ticket/upload').post(authToken.isAuthenticated, authToken.isProfileVerified, ticketController.ticketing_Business_New_Hall_Ticket)
 
 module.exports = router;

@@ -1,14 +1,14 @@
 const express = require('express');
 const cookieParser = require("cookie-parser");
+const cors = require('cors')
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config/config.env" });
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const morgan = require('morgan');
-
 const app = express();
 app.use(cookieParser());
 app.use(morgan('combined'));
-
+app.use(cors({  credentials: true,}));
 // Proxy middleware configuration for each microservice
 const userProxy = createProxyMiddleware({
     target: 'http://localhost:5001/api/v1/', // Example target URL for posts service
@@ -34,7 +34,6 @@ const checkServiceHealth = async (serviceUrl) => {
 };
 
 app.use(async (req, res, next) => {
-
     let targetURL = req.url.split('/')[1];
     if (targetURL === 'user') {
         const isAvailable = await checkServiceHealth('http://localhost:5001');
